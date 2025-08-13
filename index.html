@@ -1,50 +1,247 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JustBoot - Установка софта в один клик</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>justboot — Software Installer Assistant</title>
+<style>
+  body {
+    margin: 0; 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #121212;
+    color: #eee;
+  }
+  header {
+    background: #1f1f1f;
+    padding: 1rem 2rem;
+    font-size: 1.8rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+    color: #42a5f5;
+    text-transform: lowercase;
+  }
+  nav {
+    background: #222;
+    display: flex;
+    gap: 1rem;
+    padding: 0.5rem 2rem;
+    overflow-x: auto;
+  }
+  nav button {
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 1rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+  }
+  nav button.active,
+  nav button:hover {
+    background: #42a5f5;
+    color: #fff;
+  }
+  main {
+    padding: 2rem;
+    max-width: 1100px;
+    margin: auto;
+  }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
+    gap: 1.5rem;
+  }
+  .card {
+    background: #242424;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.7);
+  }
+  .card .letter {
+    flex: 0 0 70px;
+    background: #42a5f5;
+    color: white;
+    font-size: 3rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    user-select: none;
+  }
+  .card .content {
+    flex: 1;
+    padding: 1rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .card .content .name {
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+    color: #eee;
+  }
+  .card .content .btn-download {
+    align-self: start;
+    background: #42a5f5;
+    color: white;
+    border: none;
+    padding: 0.5rem 1.3rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s ease;
+    text-decoration: none;
+  }
+  .card .content .btn-download:hover {
+    background: #1e88e5;
+  }
+  footer {
+    text-align: center;
+    padding: 1rem;
+    color: #666;
+    font-size: 0.9rem;
+    margin-top: 3rem;
+  }
+  .loading {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 1.2rem;
+    color: #888;
+  }
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <img src="assets/logo.png" alt="JustBoot Logo">
-                <h1>JustBoot</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="#">Главная</a></li>
-                    <li><a href="#browsers">Браузеры</a></li>
-                    <li><a href="#games">Игры</a></li>
-                </ul>
-            </nav>
-        </header>
-        
-        <section class="hero">
-            <h2>Установка софта в один клик</h2>
-            <p>Просто выберите нужную программу и нажмите "Установить"</p>
-        </section>
-        
-        <section class="categories">
-            <div class="category-tabs">
-                <button class="category-tab active" data-category="all">Все</button>
-                <button class="category-tab" data-category="browsers">Браузеры</button>
-                <button class="category-tab" data-category="games">Игры</button>
-            </div>
-            
-            <div class="software-grid" id="software-grid">
-                <!-- Программы будут загружены через JS -->
-                <div class="loading">Загрузка данных...</div>
-            </div>
-        </section>
-        
-        <footer>
-            <p>© 2023 JustBoot. Все права защищены.</p>
-        </footer>
-    </div>
 
-    <script src="scripts.js"></script>
+<header>justboot</header>
+
+<nav id="categoryNav">
+  <!-- Buttons dynamically inserted here -->
+</nav>
+
+<main>
+  <div class="loading" id="loading">Loading software list...</div>
+  <div class="cards" id="cardsContainer" style="display:none;"></div>
+</main>
+
+<footer>© 2025 justboot — Software Installer Assistant</footer>
+
+<script>
+  const rawURL = 'https://raw.githubusercontent.com/Tool-xx/justboot/main/base.txt';
+
+  const nav = document.getElementById('categoryNav');
+  const cardsContainer = document.getElementById('cardsContainer');
+  const loadingElem = document.getElementById('loading');
+
+  let softwareData = {}; // { categoryName: [{name, link}, ...], ... }
+
+  function parseLine(line) {
+    line = line.trim();
+    if (!line) return null;
+    // Формат: #Category 'Name' - 'Link'
+    const regex = /^#(\w+)\s+'(.+?)'\s+-\s+'(.+?)'$/;
+    const match = line.match(regex);
+    if (!match) return null;
+    return {
+      category: match[1],
+      name: match[2],
+      link: match[3],
+    };
+  }
+
+  function createCategoryButtons() {
+    nav.innerHTML = '';
+    const categories = Object.keys(softwareData);
+    categories.forEach((category, i) => {
+      const btn = document.createElement('button');
+      btn.textContent = category;
+      if (i === 0) btn.classList.add('active');
+      btn.onclick = () => {
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        showCategory(category);
+      };
+      nav.appendChild(btn);
+    });
+  }
+
+  function showCategory(category) {
+    cardsContainer.innerHTML = '';
+    const items = softwareData[category] || [];
+    if (items.length === 0) {
+      cardsContainer.innerHTML = '<p>No software found in this category.</p>';
+      return;
+    }
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'card';
+
+      const letterDiv = document.createElement('div');
+      letterDiv.className = 'letter';
+      letterDiv.textContent = item.name[0].toUpperCase();
+
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'content';
+
+      const nameDiv = document.createElement('div');
+      nameDiv.className = 'name';
+      nameDiv.textContent = item.name;
+
+      const btn = document.createElement('a');
+      btn.className = 'btn-download';
+      btn.textContent = 'Download';
+      btn.href = item.link;
+      btn.target = '_blank';
+      btn.rel = 'noopener noreferrer';
+
+      contentDiv.appendChild(nameDiv);
+      contentDiv.appendChild(btn);
+
+      card.appendChild(letterDiv);
+      card.appendChild(contentDiv);
+
+      cardsContainer.appendChild(card);
+    });
+  }
+
+  async function loadSoftwareList() {
+    try {
+      const res = await fetch(rawURL);
+      if (!res.ok) throw new Error('Failed to load software list');
+      const text = await res.text();
+
+      softwareData = {};
+      text.split('\n').forEach(line => {
+        const parsed = parseLine(line);
+        if (parsed) {
+          if (!softwareData[parsed.category]) softwareData[parsed.category] = [];
+          softwareData[parsed.category].push({
+            name: parsed.name,
+            link: parsed.link
+          });
+        }
+      });
+
+      if (Object.keys(softwareData).length === 0) {
+        loadingElem.textContent = 'Software list is empty or failed to parse.';
+        return;
+      }
+
+      createCategoryButtons();
+      showCategory(Object.keys(softwareData)[0]);
+
+      loadingElem.style.display = 'none';
+      cardsContainer.style.display = 'grid';
+    } catch (err) {
+      loadingElem.textContent = 'Error loading software list: ' + err.message;
+    }
+  }
+
+  loadSoftwareList();
+</script>
+
 </body>
 </html>
