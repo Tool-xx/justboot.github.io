@@ -67,6 +67,77 @@
     z-index: 100;
   }
 
+  .logo {
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-block;
+  }
+
+  .logo:hover {
+    color: var(--primary);
+    transform: scale(1.05);
+  }
+
+  /* QR Code Modal */
+  .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal-content {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    max-width: 90%;
+    animation: fadeInUp 0.3s ease-out;
+  }
+
+  .modal-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    color: var(--text);
+  }
+
+  #qrcode {
+    margin: 0 auto;
+    padding: 1rem;
+    background: white;
+    border-radius: 8px;
+  }
+
+  .modal-url {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    word-break: break-all;
+  }
+
+  .modal-close {
+    margin-top: 1.5rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+  }
+
+  .modal-close:hover {
+    background: var(--primary-dark);
+  }
+
   nav {
     background: rgba(35, 36, 40, 0.9);
     display: flex;
@@ -650,12 +721,24 @@
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<!-- Добавляем библиотеку для генерации QR-кода -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
 </head>
 <body>
 
 <header>
-  <span>justboot</span>
+  <span class="logo">justboot</span>
 </header>
+
+<!-- Модальное окно для QR-кода -->
+<div id="qrModal" class="modal">
+  <div class="modal-content">
+    <h3 class="modal-title">Scan to open on mobile</h3>
+    <div id="qrcode"></div>
+    <div class="modal-url">https://tool-xx.github.io/justboot.github.io/</div>
+    <button class="modal-close">Close</button>
+  </div>
+</div>
 
 <nav id="categoryNav" aria-label="Categories">
   <!-- Категории будут добавлены скриптом -->
@@ -706,6 +789,7 @@
   const DATA_URL = 'https://raw.githubusercontent.com/Tool-xx/justboot.github.io/main/templ/base.txt';
   const STORAGE_KEY = 'justboot_favorites';
   const CATEGORIES = ['Browsers', 'Messengers', 'Games', 'Drivers', 'Music', 'Video', 'Utilities'];
+  const SITE_URL = 'https://tool-xx.github.io/justboot.github.io/';
 
   // DOM Elements
   const nav = document.getElementById('categoryNav');
@@ -716,6 +800,10 @@
   const clearSearchBtn = document.getElementById('clearSearchBtn');
   const searchWarning = document.getElementById('searchWarning');
   const filterButtons = document.querySelectorAll('.filter-btn');
+  const logo = document.querySelector('.logo');
+  const qrModal = document.getElementById('qrModal');
+  const qrCodeContainer = document.getElementById('qrcode');
+  const modalClose = document.querySelector('.modal-close');
 
   // State
   let softwareData = {};
@@ -740,6 +828,44 @@
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => setActiveFilter(btn.dataset.filter));
     });
+
+    // Logo click for QR code
+    logo.addEventListener('click', showQRCode);
+    
+    // Modal close
+    modalClose.addEventListener('click', () => {
+      qrModal.style.display = 'none';
+    });
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', (e) => {
+      if (e.target === qrModal) {
+        qrModal.style.display = 'none';
+      }
+    });
+  }
+
+  function showQRCode() {
+    // Генерируем QR-код
+    const qr = qrcode(0, 'L');
+    qr.addData(SITE_URL);
+    qr.make();
+    
+    // Очищаем предыдущий QR-код
+    qrCodeContainer.innerHTML = '';
+    
+    // Создаем элемент для QR-кода
+    const qrSvg = qr.createSvgTag({
+      cellSize: 4,
+      margin: 2,
+      scalable: true
+    });
+    
+    // Добавляем QR-код в контейнер
+    qrCodeContainer.innerHTML = qrSvg;
+    
+    // Показываем модальное окно
+    qrModal.style.display = 'flex';
   }
 
   async function loadSoftwareList() {
