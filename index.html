@@ -65,17 +65,6 @@
     position: sticky;
     top: 0;
     z-index: 100;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .refresh-info {
-    font-size: 0.9rem;
-    color: var(--text-secondary);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
   }
 
   nav {
@@ -666,10 +655,6 @@
 
 <header>
   <span>justboot</span>
-  <div class="refresh-info">
-    <i class="fas fa-sync-alt"></i>
-    <span id="refreshTimer">Auto-refresh in 5:00</span>
-  </div>
 </header>
 
 <nav id="categoryNav" aria-label="Categories">
@@ -721,7 +706,6 @@
   const DATA_URL = 'https://raw.githubusercontent.com/Tool-xx/justboot.github.io/main/templ/base.txt';
   const STORAGE_KEY = 'justboot_favorites';
   const CATEGORIES = ['Browsers', 'Messengers', 'Games', 'Drivers', 'Music', 'Video', 'Utilities'];
-  const REFRESH_INTERVAL = 5 * 60 * 1000; // 5 минут в миллисекундах
 
   // DOM Elements
   const nav = document.getElementById('categoryNav');
@@ -732,7 +716,6 @@
   const clearSearchBtn = document.getElementById('clearSearchBtn');
   const searchWarning = document.getElementById('searchWarning');
   const filterButtons = document.querySelectorAll('.filter-btn');
-  const refreshTimer = document.getElementById('refreshTimer');
 
   // State
   let softwareData = {};
@@ -741,14 +724,11 @@
   let currentFilter = 'all';
   let favorites = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY)) || []);
   let currentDisplayed = [];
-  let refreshInterval;
-  let timeLeft = 300; // 5 минут в секундах
 
   // Initialize
   document.addEventListener('DOMContentLoaded', () => {
     loadSoftwareList();
     setupEventListeners();
-    startAutoRefresh();
   });
 
   function setupEventListeners() {
@@ -760,28 +740,6 @@
     filterButtons.forEach(btn => {
       btn.addEventListener('click', () => setActiveFilter(btn.dataset.filter));
     });
-  }
-
-  function startAutoRefresh() {
-    // Обновляем таймер каждую секунду
-    const timerInterval = setInterval(() => {
-      timeLeft--;
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      refreshTimer.textContent = `Auto-refresh in ${minutes}:${seconds.toString().padStart(2, '0')}`;
-      
-      if (timeLeft <= 0) {
-        clearInterval(timerInterval);
-        refreshTimer.textContent = 'Refreshing...';
-        loadSoftwareList();
-      }
-    }, 1000);
-
-    // Полное обновление каждые 5 минут
-    refreshInterval = setInterval(() => {
-      loadSoftwareList();
-      timeLeft = 300; // Сброс таймера
-    }, REFRESH_INTERVAL);
   }
 
   async function loadSoftwareList() {
