@@ -5,72 +5,153 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>justboot — Software Installer Assistant</title>
 <style>
+  /* Градиентный фон */
   body {
     margin: 0; 
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: #121212;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
     color: #eee;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
   }
   header {
-    background: #1f1f1f;
+    background: rgba(30, 60, 114, 0.9);
     padding: 1rem 2rem;
-    font-size: 1.8rem;
-    font-weight: bold;
-    letter-spacing: 2px;
-    color: #42a5f5;
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: #f0f8ff;
     text-transform: lowercase;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    user-select: none;
   }
   nav {
-    background: #222;
+    background: rgba(42, 82, 152, 0.9);
     display: flex;
     gap: 1rem;
-    padding: 0.5rem 2rem;
+    padding: 0.6rem 1rem;
     overflow-x: auto;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
   }
   nav button {
     background: transparent;
-    border: none;
-    color: #aaa;
+    border: 2px solid transparent;
+    color: #cbd5e1;
     font-size: 1rem;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1.3rem;
     cursor: pointer;
-    border-radius: 8px;
-    transition: all 0.3s ease;
+    border-radius: 12px;
+    transition:
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease;
     white-space: nowrap;
+    font-weight: 600;
   }
   nav button.active,
   nav button:hover {
-    background: #42a5f5;
-    color: #fff;
+    background-color: #f0f8ff;
+    color: #2a5298;
+    border-color: #f0f8ff;
   }
+
   main {
-    padding: 2rem;
+    padding: 1.5rem 2rem 3rem;
     max-width: 1100px;
     margin: auto;
+    flex-grow: 1;
   }
+
+  /* Поиск */
+  #searchContainer {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  #searchInput {
+    flex-grow: 1;
+    min-width: 220px;
+    padding: 0.5rem 1rem;
+    border-radius: 14px;
+    border: none;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 0 8px rgba(240,248,255,0.4);
+    background-color: rgba(240,248,255,0.15);
+    color: #f0f8ff;
+    transition: background-color 0.3s ease;
+  }
+  #searchInput::placeholder {
+    color: #a0b0cc;
+  }
+  #searchInput:focus {
+    background-color: rgba(240,248,255,0.3);
+  }
+  #clearSearchBtn {
+    background: #f0f8ff;
+    border: none;
+    color: #2a5298;
+    padding: 0.5rem 1rem;
+    border-radius: 14px;
+    cursor: pointer;
+    font-weight: 700;
+    user-select: none;
+    transition: background-color 0.3s ease;
+  }
+  #clearSearchBtn:hover {
+    background-color: #cce0ff;
+  }
+
+  #searchWarning {
+    color: #ffb347;
+    font-weight: 600;
+    margin-top: 0.2rem;
+    font-size: 0.9rem;
+    user-select: none;
+  }
+
+  /* Сетка карточек */
   .cards {
     display: grid;
     grid-template-columns: repeat(auto-fill,minmax(280px,1fr));
     gap: 1.5rem;
   }
+
   .card {
-    background: #242424;
+    background: rgba(240,248,255,0.1);
     display: flex;
-    border-radius: 12px;
+    border-radius: 16px;
     overflow: hidden;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.7);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    user-select: none;
+    /* фиксированная высота для одинаковых размеров */
+    height: 100px;
+    cursor: default;
+    animation: fadeInUp 0.4s ease forwards;
+    opacity: 0;
   }
+  .card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 28px rgba(0,0,0,0.7);
+    cursor: pointer;
+  }
+
   .card .letter {
-    flex: 0 0 70px;
-    background: #42a5f5;
+    flex: 0 0 80px;
+    background: linear-gradient(135deg, #42a5f5, #1e88e5);
     color: white;
-    font-size: 3rem;
+    font-size: 4rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 700;
+    font-weight: 900;
     user-select: none;
   }
+
   .card .content {
     flex: 1;
     padding: 1rem 1.5rem;
@@ -79,38 +160,65 @@
     justify-content: center;
   }
   .card .content .name {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 1rem;
-    font-weight: 600;
-    color: #eee;
+    font-weight: 700;
+    color: #e1e9ff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .card .content .btn-download {
     align-self: start;
     background: #42a5f5;
     color: white;
     border: none;
-    padding: 0.5rem 1.3rem;
-    border-radius: 6px;
+    padding: 0.45rem 1.3rem;
+    border-radius: 20px;
     cursor: pointer;
-    font-weight: 600;
-    transition: background 0.3s ease;
+    font-weight: 700;
     text-decoration: none;
+    user-select: none;
+    transition: background 0.3s ease;
+    font-size: 1rem;
+    box-shadow: 0 2px 10px rgba(66,165,245,0.7);
   }
   .card .content .btn-download:hover {
     background: #1e88e5;
+    box-shadow: 0 4px 20px rgba(30,136,229,0.9);
   }
+
   footer {
     text-align: center;
-    padding: 1rem;
-    color: #666;
+    padding: 1rem 2rem;
+    color: #a0a9bb;
     font-size: 0.9rem;
-    margin-top: 3rem;
+    margin-top: auto;
+    user-select: none;
   }
-  .loading {
-    text-align: center;
-    margin-top: 3rem;
-    font-size: 1.2rem;
-    color: #888;
+
+  /* Анимация появления карточек */
+  @keyframes fadeInUp {
+    0% {
+      opacity: 0;
+      transform: translateY(12px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* Скроллбар для навигации */
+  nav::-webkit-scrollbar {
+    height: 8px;
+  }
+  nav::-webkit-scrollbar-thumb {
+    background: #72a4ff;
+    border-radius: 6px;
+  }
+  nav::-webkit-scrollbar-track {
+    background: transparent;
   }
 </style>
 </head>
@@ -119,10 +227,15 @@
 <header>justboot</header>
 
 <nav id="categoryNav">
-  <!-- Buttons dynamically inserted here -->
+  <!-- Категории кнопки -->
 </nav>
 
 <main>
+  <div id="searchContainer">
+    <input id="searchInput" type="text" placeholder="Search in current category..." autocomplete="off" />
+    <button id="clearSearchBtn" title="Clear Search" aria-label="Clear Search" style="display:none;">✕</button>
+  </div>
+  <div id="searchWarning" style="display:none;">🔎 Поиск работает только внутри выбранной категории</div>
   <div class="loading" id="loading">Loading software list...</div>
   <div class="cards" id="cardsContainer" style="display:none;"></div>
 </main>
@@ -136,7 +249,14 @@
   const cardsContainer = document.getElementById('cardsContainer');
   const loadingElem = document.getElementById('loading');
 
+  const searchInput = document.getElementById('searchInput');
+  const clearSearchBtn = document.getElementById('clearSearchBtn');
+  const searchWarning = document.getElementById('searchWarning');
+
   let softwareData = {}; // { categoryName: [{name, link}, ...], ... }
+  let allSoftware = [];
+  let currentCategory = null;
+  let currentFiltered = [];
 
   function parseLine(line) {
     line = line.trim();
@@ -154,30 +274,55 @@
 
   function createCategoryButtons() {
     nav.innerHTML = '';
-    const categories = Object.keys(softwareData);
-    categories.forEach((category, i) => {
+    const categories = Object.keys(softwareData).sort((a,b) => a.localeCompare(b));
+    // Добавляем All сверху
+    const allBtn = document.createElement('button');
+    allBtn.textContent = 'All';
+    allBtn.classList.add('active');
+    allBtn.onclick = () => {
+      setActiveCategory('All');
+    };
+    nav.appendChild(allBtn);
+
+    categories.forEach(category => {
       const btn = document.createElement('button');
       btn.textContent = category;
-      if (i === 0) btn.classList.add('active');
       btn.onclick = () => {
-        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        showCategory(category);
+        setActiveCategory(category);
       };
       nav.appendChild(btn);
     });
   }
 
-  function showCategory(category) {
+  function setActiveCategory(category) {
+    currentCategory = category;
+    // Обновляем кнопки
+    document.querySelectorAll('nav button').forEach(b => {
+      b.classList.toggle('active', b.textContent === category);
+    });
+    searchInput.value = '';
+    clearSearchBtn.style.display = 'none';
+    searchWarning.style.display = 'none';
+
+    if (category === 'All') {
+      currentFiltered = allSoftware;
+    } else {
+      currentFiltered = softwareData[category] || [];
+    }
+    renderCards(currentFiltered);
+  }
+
+  function renderCards(items) {
     cardsContainer.innerHTML = '';
-    const items = softwareData[category] || [];
-    if (items.length === 0) {
-      cardsContainer.innerHTML = '<p>No software found in this category.</p>';
+    if (!items.length) {
+      cardsContainer.innerHTML = '<p style="color:#ffb347; font-weight:700; user-select:none;">No software found.</p>';
       return;
     }
-    items.forEach(item => {
+    // Добавляем с задержкой для анимации
+    items.forEach((item, i) => {
       const card = document.createElement('div');
       card.className = 'card';
+      card.style.animationDelay = (i * 0.05) + 's';
 
       const letterDiv = document.createElement('div');
       letterDiv.className = 'letter';
@@ -207,6 +352,33 @@
     });
   }
 
+  function filterItems(query) {
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      searchWarning.style.display = 'none';
+      clearSearchBtn.style.display = 'none';
+      renderCards(currentCategory === 'All' ? allSoftware : softwareData[currentCategory]);
+      return;
+    }
+    clearSearchBtn.style.display = 'inline-block';
+    searchWarning.style.display = 'inline-block';
+
+    const source = currentCategory === 'All' ? allSoftware : softwareData[currentCategory];
+    const filtered = source.filter(item => item.name.toLowerCase().includes(q));
+    renderCards(filtered);
+  }
+
+  clearSearchBtn.onclick = () => {
+    searchInput.value = '';
+    clearSearchBtn.style.display = 'none';
+    searchWarning.style.display = 'none';
+    filterItems('');
+  };
+
+  searchInput.oninput = e => {
+    filterItems(e.target.value);
+  };
+
   async function loadSoftwareList() {
     try {
       const res = await fetch(rawURL);
@@ -214,11 +386,16 @@
       const text = await res.text();
 
       softwareData = {};
+      allSoftware = [];
       text.split('\n').forEach(line => {
         const parsed = parseLine(line);
         if (parsed) {
           if (!softwareData[parsed.category]) softwareData[parsed.category] = [];
           softwareData[parsed.category].push({
+            name: parsed.name,
+            link: parsed.link
+          });
+          allSoftware.push({
             name: parsed.name,
             link: parsed.link
           });
@@ -231,7 +408,7 @@
       }
 
       createCategoryButtons();
-      showCategory(Object.keys(softwareData)[0]);
+      setActiveCategory('All');
 
       loadingElem.style.display = 'none';
       cardsContainer.style.display = 'grid';
