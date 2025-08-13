@@ -16,6 +16,15 @@
     --warning: #faa61a;
     --error: #ed4245;
     --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    
+    /* Category colors */
+    --browsers: #3ba55c;
+    --messengers: #5865F2;
+    --games: #eb459e;
+    --drivers: #faa61a;
+    --music: #ed4245;
+    --video: #9147ff;
+    --utilities: #57F287;
   }
 
   * {
@@ -123,7 +132,39 @@
   nav button.active,
   nav button:hover {
     color: white;
+  }
+
+  /* Category-specific button colors */
+  nav button[data-category="All"] {
+    background: rgba(255, 255, 255, 0.1);
+  }
+  nav button[data-category="Browsers"].active,
+  nav button[data-category="Browsers"]:hover {
+    background: rgba(59, 165, 92, 0.2);
+  }
+  nav button[data-category="Messengers"].active,
+  nav button[data-category="Messengers"]:hover {
     background: rgba(88, 101, 242, 0.2);
+  }
+  nav button[data-category="Games"].active,
+  nav button[data-category="Games"]:hover {
+    background: rgba(235, 69, 158, 0.2);
+  }
+  nav button[data-category="Drivers"].active,
+  nav button[data-category="Drivers"]:hover {
+    background: rgba(250, 166, 26, 0.2);
+  }
+  nav button[data-category="Music"].active,
+  nav button[data-category="Music"]:hover {
+    background: rgba(237, 66, 69, 0.2);
+  }
+  nav button[data-category="Video"].active,
+  nav button[data-category="Video"]:hover {
+    background: rgba(145, 71, 255, 0.2);
+  }
+  nav button[data-category="Utilities"].active,
+  nav button[data-category="Utilities"]:hover {
+    background: rgba(87, 242, 135, 0.2);
   }
 
   nav button.active::after {
@@ -134,8 +175,30 @@
     transform: translateX(-50%);
     width: 4px;
     height: 4px;
-    background: var(--primary);
     border-radius: 50%;
+  }
+
+  /* Category-specific indicators */
+  nav button[data-category="Browsers"].active::after {
+    background: var(--browsers);
+  }
+  nav button[data-category="Messengers"].active::after {
+    background: var(--messengers);
+  }
+  nav button[data-category="Games"].active::after {
+    background: var(--games);
+  }
+  nav button[data-category="Drivers"].active::after {
+    background: var(--drivers);
+  }
+  nav button[data-category="Music"].active::after {
+    background: var(--music);
+  }
+  nav button[data-category="Video"].active::after {
+    background: var(--video);
+  }
+  nav button[data-category="Utilities"].active::after {
+    background: var(--utilities);
   }
 
   main {
@@ -294,7 +357,6 @@
     width: 48px;
     height: 48px;
     border-radius: 12px;
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
     color: white;
     font-size: 1.5rem;
     display: flex;
@@ -302,6 +364,29 @@
     justify-content: center;
     font-weight: 700;
     flex-shrink: 0;
+  }
+
+  /* Category-specific card icons */
+  .card[data-category="Browsers"] .card-icon {
+    background: linear-gradient(135deg, var(--browsers), #2d8a4d);
+  }
+  .card[data-category="Messengers"] .card-icon {
+    background: linear-gradient(135deg, var(--messengers), var(--primary-dark));
+  }
+  .card[data-category="Games"] .card-icon {
+    background: linear-gradient(135deg, var(--games), #d41d7a);
+  }
+  .card[data-category="Drivers"] .card-icon {
+    background: linear-gradient(135deg, var(--drivers), #e0951a);
+  }
+  .card[data-category="Music"] .card-icon {
+    background: linear-gradient(135deg, var(--music), #d13333);
+  }
+  .card[data-category="Video"] .card-icon {
+    background: linear-gradient(135deg, var(--video), #7c3ad4);
+  }
+  .card[data-category="Utilities"] .card-icon {
+    background: linear-gradient(135deg, var(--utilities), #45d16d);
   }
 
   .card-title {
@@ -317,6 +402,8 @@
     color: var(--text-secondary);
     margin-top: 0.25rem;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 
   .card-body {
@@ -364,6 +451,53 @@
   .btn-download:hover {
     background: var(--primary-dark);
     box-shadow: 0 4px 12px rgba(88, 101, 242, 0.4);
+  }
+
+  /* Category-specific download buttons */
+  .card[data-category="Browsers"] .btn-download {
+    background: var(--browsers);
+  }
+  .card[data-category="Browsers"] .btn-download:hover {
+    background: #2d8a4d;
+    box-shadow: 0 4px 12px rgba(59, 165, 92, 0.4);
+  }
+  .card[data-category="Messengers"] .btn-download {
+    background: var(--messengers);
+  }
+  .card[data-category="Games"] .btn-download {
+    background: var(--games);
+  }
+  .card[data-category="Games"] .btn-download:hover {
+    background: #d41d7a;
+    box-shadow: 0 4px 12px rgba(235, 69, 158, 0.4);
+  }
+  .card[data-category="Drivers"] .btn-download {
+    background: var(--drivers);
+  }
+  .card[data-category="Drivers"] .btn-download:hover {
+    background: #e0951a;
+    box-shadow: 0 4px 12px rgba(250, 166, 26, 0.4);
+  }
+  .card[data-category="Music"] .btn-download {
+    background: var(--music);
+  }
+  .card[data-category="Music"] .btn-download:hover {
+    background: #d13333;
+    box-shadow: 0 4px 12px rgba(237, 66, 69, 0.4);
+  }
+  .card[data-category="Video"] .btn-download {
+    background: var(--video);
+  }
+  .card[data-category="Video"] .btn-download:hover {
+    background: #7c3ad4;
+    box-shadow: 0 4px 12px rgba(145, 71, 255, 0.4);
+  }
+  .card[data-category="Utilities"] .btn-download {
+    background: var(--utilities);
+  }
+  .card[data-category="Utilities"] .btn-download:hover {
+    background: #45d16d;
+    box-shadow: 0 4px 12px rgba(87, 242, 135, 0.4);
   }
 
   .card-actions {
@@ -497,6 +631,15 @@
       --success: #3ba55c;
       --warning: #faa61a;
       --error: #ed4245;
+      
+      /* Light theme category colors */
+      --browsers: #3ba55c;
+      --messengers: #5865F2;
+      --games: #eb459e;
+      --drivers: #faa61a;
+      --music: #ed4245;
+      --video: #9147ff;
+      --utilities: #57F287;
     }
 
     body {
@@ -519,6 +662,14 @@
       background-color: white;
       border-color: var(--primary);
     }
+    
+    nav button {
+      color: var(--text-secondary);
+    }
+    
+    nav button:hover {
+      color: var(--text);
+    }
   }
 </style>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -537,7 +688,7 @@
 </header>
 
 <nav id="categoryNav" aria-label="Categories">
-  <!-- Категории кнопки -->
+  <!-- Категории будут добавлены скриптом -->
 </nav>
 
 <main>
@@ -577,12 +728,14 @@
 </main>
 
 <footer>
-  © 2025 <a href="#" target="_blank">justboot</a> — Software Installer Assistant
+  © 2025 <a href="https://github.com/Tool-xx/justboot.github.io" target="_blank">justboot</a> — Software Installer Assistant
 </footer>
 
 <script>
-  const rawURL = 'https://raw.githubusercontent.com/Tool-xx/justboot/main/base.txt';
+  // Конфигурация
+  const DATA_URL = 'https://raw.githubusercontent.com/Tool-xx/justboot.github.io/main/templ/base.txt';
   const STORAGE_KEY = 'justboot_favorites';
+  const CATEGORIES = ['Browsers', 'Messengers', 'Games', 'Drivers', 'Music', 'Video', 'Utilities'];
 
   // DOM Elements
   const nav = document.getElementById('categoryNav');
@@ -600,7 +753,7 @@
   let allSoftware = [];
   let currentCategory = 'All';
   let currentFilter = 'all';
-  let favorites = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || []);
+  let favorites = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY)) || []);
   let currentDisplayed = [];
 
   // Initialize
@@ -645,7 +798,7 @@
 
   async function loadSoftwareList() {
     try {
-      const res = await fetch(rawURL);
+      const res = await fetch(DATA_URL);
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
       const text = await res.text();
 
@@ -671,36 +824,44 @@
     softwareData = {};
     allSoftware = [];
     
+    // Initialize categories
+    CATEGORIES.forEach(category => {
+      softwareData[category] = [];
+    });
+    
     text.split('\n').forEach(line => {
       const parsed = parseLine(line);
       if (parsed) {
-        if (!softwareData[parsed.category]) {
-          softwareData[parsed.category] = [];
+        if (softwareData[parsed.category]) {
+          const software = {
+            ...parsed,
+            id: generateId(parsed.name),
+            isFavorite: favorites.has(parsed.name)
+          };
+          
+          softwareData[parsed.category].push(software);
+          allSoftware.push(software);
         }
-        
-        const software = {
-          ...parsed,
-          id: generateId(parsed.name),
-          isFavorite: favorites.has(parsed.name)
-        };
-        
-        softwareData[parsed.category].push(software);
-        allSoftware.push(software);
       }
     });
     
-    // Sort categories alphabetically
-    Object.keys(softwareData).forEach(category => {
-      softwareData[category].sort((a, b) => a.name.localeCompare(b.name));
+    // Sort each category alphabetically
+    CATEGORIES.forEach(category => {
+      if (softwareData[category]) {
+        softwareData[category].sort((a, b) => a.name.localeCompare(b.name));
+      }
     });
+    
+    // Sort allSoftware
+    allSoftware.sort((a, b) => a.name.localeCompare(b.name));
   }
 
   function parseLine(line) {
     line = line.trim();
-    if (!line) return null;
+    if (!line || !line.startsWith('#')) return null;
     
-    // Формат: #Category 'Name' - 'Link' // Description
-    const regex = /^#(\w+)\s+'(.+?)'\s+-\s+'(.+?)'(?:\s*\/\/\s*(.+))?$/;
+    // Формат: #Category 'Name' - 'Link'
+    const regex = /^#(Browsers|Messengers|Games|Drivers|Music|Video|Utilities)\s+'(.+?)'\s+-\s+'(.+?)'$/;
     const match = line.match(regex);
     if (!match) return null;
     
@@ -708,8 +869,21 @@
       category: match[1],
       name: match[2],
       link: match[3],
-      description: match[4] || 'No description available'
+      description: getDefaultDescription(match[1])
     };
+  }
+
+  function getDefaultDescription(category) {
+    const descriptions = {
+      'Browsers': 'Web browser application',
+      'Messengers': 'Messaging and communication software',
+      'Games': 'Game or gaming-related software',
+      'Drivers': 'Device drivers or system utilities',
+      'Music': 'Music player or audio software',
+      'Video': 'Video player or editing software',
+      'Utilities': 'System utility or tool'
+    };
+    return descriptions[category] || 'Software application';
   }
 
   function generateId(name) {
@@ -724,9 +898,11 @@
     allBtn.classList.add('active');
     nav.appendChild(allBtn);
     
-    // Add other categories sorted
-    Object.keys(softwareData).sort().forEach(category => {
-      nav.appendChild(createCategoryButton(category));
+    // Add other categories in predefined order
+    CATEGORIES.forEach(category => {
+      if (softwareData[category] && softwareData[category].length > 0) {
+        nav.appendChild(createCategoryButton(category));
+      }
     });
   }
 
@@ -787,7 +963,7 @@
     if (searchQuery) {
       items = items.filter(item => 
         item.name.toLowerCase().includes(searchQuery) ||
-        item.description.toLowerCase().includes(searchQuery)
+        (item.description && item.description.toLowerCase().includes(searchQuery))
       );
     }
     
@@ -810,8 +986,9 @@
     items.forEach((item, index) => {
       const card = document.createElement('div');
       card.className = 'card';
-      card.style.animationDelay = `${index * 0.05}s`;
       card.dataset.id = item.id;
+      card.dataset.category = item.category;
+      card.style.animationDelay = `${index * 0.05}s`;
       card.setAttribute('role', 'listitem');
       
       // Favorite star with different color if favorited
