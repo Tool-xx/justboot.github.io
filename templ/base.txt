@@ -1,3 +1,4 @@
+#Browsers 'Comet' - 'https://www.perplexity.ai/download-comet'
 #Browsers 'Google Chrome' - 'https://www.google.com/intl/ru/chrome/'
 #Browsers 'Mozilla Firefox' - 'https://www.mozilla.org/ru/firefox/new/'
 #Browsers 'Microsoft Edge' - 'https://www.microsoft.com/edge'
