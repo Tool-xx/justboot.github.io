@@ -1,4 +1,3 @@
-![Uploading image.png…]()
 # justboot — Software Installer Assistant
 
 **justboot** is a web-based application designed for centralized software discovery and installation.  
