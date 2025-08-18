@@ -21,8 +21,7 @@ The project runs directly in the browser and retrieves its software catalog from
 
 ## Project Structure
 - **`index.html`** — main application file.  
-- **`templ/base.txt`** — external catalog containing the software list.  
-- **`/screenshots/`** — (recommended) directory for UI screenshots.  
+- **`templ/base.txt`** — external catalog containing the software list.   
 
 ---
 
