@@ -48,14 +48,7 @@ The catalog file `templ/base.txt` follows the structure:
 - **HTML5**, **CSS3**, **Vanilla JavaScript**  
 - **Font Awesome** — icons  
 - **Google Fonts (Inter)** — typography  
-- **qrcode-generator** — QR code generation  
-
----
-
-## Roadmap
-- Extend the catalog with additional categories.  
-- Implement automatic catalog updates.  
-- Add program-specific icons and detailed descriptions.  
+- **qrcode-generator** — QR code generation    
 
 ---
 
